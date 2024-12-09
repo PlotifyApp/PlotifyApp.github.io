@@ -1,0 +1,78 @@
+[debug] [2024-12-05T13:18:05.654Z] ----------------------------------------------------------------------
+[debug] [2024-12-05T13:18:05.667Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Tanya Grace\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2024-12-05T13:18:05.668Z] CLI Version:   13.28.0
+[debug] [2024-12-05T13:18:05.668Z] Platform:      win32
+[debug] [2024-12-05T13:18:05.668Z] Node Version:  v20.15.1
+[debug] [2024-12-05T13:18:05.669Z] Time:          Thu Dec 05 2024 21:18:05 GMT+0800 (Philippine Standard Time)
+[debug] [2024-12-05T13:18:05.669Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-12-05T13:18:05.681Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-12-05T13:18:05.682Z] > authorizing via signed-in user (tanyangqty25@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\xampp-dg\htdocs\Plotify\src\routes
+
+Before we get started, keep in mind:
+
+  * You are currently outside your home directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2024-12-05T13:18:15.854Z] Checked if tokens are valid: true, expires at: 1733407693777
+[debug] [2024-12-05T13:18:15.854Z] Checked if tokens are valid: true, expires at: 1733407693777
+[debug] [2024-12-05T13:18:15.858Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=100
+[debug] [2024-12-05T13:18:16.593Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2024-12-05T13:18:16.593Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[info] i  Using project plotify-80400 (Plotify) 
+[info] 
+=== Firestore Setup
+[debug] [2024-12-05T13:18:17.934Z] Checked if tokens are valid: true, expires at: 1733407693777
+[debug] [2024-12-05T13:18:17.935Z] Checked if tokens are valid: true, expires at: 1733407693777
+[debug] [2024-12-05T13:18:17.935Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/plotify-80400/services/firestore.googleapis.com [none]
+[debug] [2024-12-05T13:18:17.935Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/plotify-80400/services/firestore.googleapis.com x-goog-quota-user=projects/plotify-80400
+[debug] [2024-12-05T13:18:19.151Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/plotify-80400/services/firestore.googleapis.com 200
+[debug] [2024-12-05T13:18:19.151Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/plotify-80400/services/firestore.googleapis.com [omitted]
+[debug] [2024-12-05T13:18:19.152Z] Checked if tokens are valid: true, expires at: 1733407693777
+[debug] [2024-12-05T13:18:19.152Z] Checked if tokens are valid: true, expires at: 1733407693777
+[debug] [2024-12-05T13:18:19.152Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/plotify-80400/databases/(default) [none]
+[debug] [2024-12-05T13:18:19.562Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/plotify-80400/databases/(default) 200
+[debug] [2024-12-05T13:18:19.563Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/plotify-80400/databases/(default) {"name":"projects/plotify-80400/databases/(default)","uid":"1f7b7c23-14c5-407c-bc28-9add562ac700","createTime":"2024-12-05T13:17:36.193882Z","updateTime":"2024-12-05T13:17:36.193882Z","locationId":"asia-southeast1","type":"FIRESTORE_NATIVE","concurrencyMode":"PESSIMISTIC","versionRetentionPeriod":"3600s","earliestVersionTime":"2024-12-05T13:17:36.193882Z","appEngineIntegrationMode":"DISABLED","keyPrefix":"zas","pointInTimeRecoveryEnablement":"POINT_IN_TIME_RECOVERY_DISABLED","deleteProtectionState":"DELETE_PROTECTION_DISABLED","etag":"IPHinNvbkIoDMNqio8bbkIoD"}
+[debug] [2024-12-05T13:18:19.563Z] database_type: FIRESTORE_NATIVE
+[debug] [2024-12-05T13:18:19.563Z] database_type: FIRESTORE_NATIVE
+[debug] [2024-12-05T13:18:19.564Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-12-05T13:18:19.564Z] > authorizing via signed-in user (tanyangqty25@gmail.com)
+[debug] [2024-12-05T13:18:19.564Z] [iam] checking project plotify-80400 for permissions ["firebase.projects.get"]
+[debug] [2024-12-05T13:18:19.565Z] Checked if tokens are valid: true, expires at: 1733407693777
+[debug] [2024-12-05T13:18:19.565Z] Checked if tokens are valid: true, expires at: 1733407693777
+[debug] [2024-12-05T13:18:19.565Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/plotify-80400:testIamPermissions [none]
+[debug] [2024-12-05T13:18:19.565Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/plotify-80400:testIamPermissions x-goog-quota-user=projects/plotify-80400
+[debug] [2024-12-05T13:18:19.565Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/plotify-80400:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2024-12-05T13:18:20.471Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/plotify-80400:testIamPermissions 200
+[debug] [2024-12-05T13:18:20.471Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/plotify-80400:testIamPermissions {"permissions":["firebase.projects.get"]}
+[info] 
+[info] Firestore Security Rules allow you to define how and when to allow
+[info] requests. You can keep these rules in your project directory
+[info] and publish them with firebase deploy.
+[info] 
+[debug] [2024-12-05T13:19:13.536Z] Checked if tokens are valid: true, expires at: 1733407693777
+[debug] [2024-12-05T13:19:13.536Z] Checked if tokens are valid: true, expires at: 1733407693777
+[debug] [2024-12-05T13:19:13.537Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/plotify-80400/releases pageSize=10&pageToken=
+[debug] [2024-12-05T13:19:24.615Z] *** [apiv2] error from fetch(https://firebaserules.googleapis.com/v1/projects/plotify-80400/releases?pageSize=10&pageToken=, {"headers":{},"method":"GET"}): FetchError: request to https://firebaserules.googleapis.com/v1/projects/plotify-80400/releases?pageSize=10&pageToken= failed, reason: getaddrinfo ENOTFOUND firebaserules.googleapis.com
+[debug] [2024-12-05T13:19:29.652Z] Error: Timed out.
+    at Timeout._onTimeout (C:\Users\Tanya Grace\AppData\Roaming\npm\node_modules\firebase-tools\lib\utils.js:269:49)
+    at listOnTimeout (node:internal/timers:573:17)
+    at process.processTimers (node:internal/timers:514:7)
+[error] 
+[error] Error: An unexpected error has occurred.

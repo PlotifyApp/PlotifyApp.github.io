@@ -8,7 +8,6 @@
   import { Modal } from 'flowbite-svelte';
   import dayjs from 'dayjs';
   import 'dayjs/locale/en'; 
-  export let open: boolean = false; // Expecting `open` instead of `isOpen`
 
   const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
   const db = getFirestore(app);
@@ -45,8 +44,6 @@
   let isModalOpen = false;
   let modalMessage = '';
   let searchQuery = '';
-  let showMessage = false; // To control the visibility of the login message
-
   let filteredStories = stories;
   let newCommentText = ''; 
   let editingCommentId: string | null = null;  // Track which comment is being edited
@@ -81,7 +78,123 @@ onMount(async () => {
     });
   }
 
-  
+  async function addComment(storyId: string, commentText: string) {
+    if (!currentUserEmail) {
+      showAlert("Please log in to comment!");
+      return;
+    }
+
+    if (!commentText.trim()) {
+      showAlert("Comment cannot be empty!");
+      return;
+    }
+
+    try {
+      const storyRef = doc(db, "storyList", storyId);
+      const newComment: Comment = {
+        id: `${storyId}_comment_${new Date().getTime()}`,
+        commenter: currentUserEmail,
+        text: commentText,
+        createdAt: Timestamp.fromDate(new Date()), // Firestore Timestamp
+      };
+
+      // Add comment to Firestore
+      await updateDoc(storyRef, {
+        comments: arrayUnion(newComment),
+      });
+
+      // Update the local state to reflect the new comment
+      stories = [
+        ...stories.map((story) =>
+          story.id === storyId
+            ? { ...story, comments: [...(story.comments || []), newComment] }
+            : story
+        ),
+      ];
+
+      showAlert("Comment added successfully!");
+    } catch (error) {
+      console.error("Error adding comment:", error);
+      showAlert("Failed to add comment. Please try again later.");
+    }
+  }
+
+  async function editComment(storyId: string, commentId: string, newText: string) {
+  if (!currentUserEmail) {
+    showAlert("Please log in to edit your comment!");
+    return;
+  }
+
+  try {
+    const storyRef = doc(db, "storyList", storyId);
+
+    // Update the comment in Firestore
+    const storyDoc = await getDoc(storyRef);
+    const storyData = storyDoc.data();
+    if (storyData) {
+      const updatedComments = storyData.comments.map((comment: Comment) =>
+        comment.id === commentId ? { ...comment, text: newText } : comment
+      );
+
+      await updateDoc(storyRef, {
+        comments: updatedComments,
+      });
+
+      // Update the local state to reflect the edited comment
+      stories = stories.map((story) =>
+        story.id === storyId
+          ? { ...story, comments: updatedComments }
+          : story
+      );
+
+      showAlert("Comment updated successfully!");
+
+      // Reset the editing state
+      editingCommentId = null; // Close the textarea
+      commentText = ""; // Clear the comment text
+    }
+  } catch (error) {
+    console.error("Error updating comment:", error);
+    showAlert("Failed to update comment. Please try again later.");
+  }
+}
+
+async function deleteComment(storyId: string, commentId: string) {
+  if (!currentUserEmail) {
+    showAlert("Please log in to delete your comment!");
+    return;
+  }
+
+  try {
+    const storyRef = doc(db, "storyList", storyId);
+
+    // Remove the comment from Firestore
+    const storyDoc = await getDoc(storyRef);
+    const storyData = storyDoc.data();
+    if (storyData) {
+      const filteredComments = storyData.comments.filter(
+        (comment: Comment) => comment.id !== commentId
+      );
+
+      await updateDoc(storyRef, {
+        comments: filteredComments,
+      });
+
+      // Update the local state to reflect the deleted comment
+      stories = stories.map((story) =>
+        story.id === storyId
+          ? { ...story, comments: filteredComments }
+          : story
+      );
+
+      showAlert("Comment deleted successfully!");
+    }
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+    showAlert("Failed to delete comment. Please try again later.");
+  }
+}
+
 async function fetchStories() {
     try {
       const q = query(collection(db, "storyList"), orderBy("createdAt", "desc"));
@@ -134,31 +247,79 @@ async function fetchStories() {
   }
 
 
-  const toggleVote = (storyId: string, voteType: string) => {
-  if (!currentUserEmail) {
-    modalMessage = "Please log in to vote.";  // Customize the message here
-    isModalOpen = true;  // Show the modal
-    return;
+  async function toggleVote(plotId: string, voteType: 'upvote' | 'downvote') {
+    if (!currentUserEmail) {
+      showAlert("Please log in first!");
+      return;
+    }
+
+    const plotRef = doc(db, "storyList", plotId);
+
+    try {
+      const plotSnap = await getDoc(plotRef);
+      const storyData = plotSnap.data();
+
+      if (!storyData) return;
+
+      const currentUpvotedBy = storyData.upvotedBy || [];
+      const currentDownvotedBy = storyData.downvotedBy || [];
+
+      let updatedUpvotedBy = [...currentUpvotedBy];
+      let updatedDownvotedBy = [...currentDownvotedBy];
+      let upvotesChange = 0;
+      let downvotesChange = 0;
+
+      if (voteType === 'upvote') {
+        if (currentUpvotedBy.includes(currentUserEmail)) {
+          updatedUpvotedBy = updatedUpvotedBy.filter(email => email !== currentUserEmail);
+          upvotesChange = -1;
+        } else {
+          updatedUpvotedBy.push(currentUserEmail);
+          upvotesChange = 1;
+
+          if (currentDownvotedBy.includes(currentUserEmail)) {
+            updatedDownvotedBy = updatedDownvotedBy.filter(email => email !== currentUserEmail);
+            downvotesChange = -1;
+          }
+        }
+      } else if (voteType === 'downvote') {
+        if (currentDownvotedBy.includes(currentUserEmail)) {
+          updatedDownvotedBy = updatedDownvotedBy.filter(email => email !== currentUserEmail);
+          downvotesChange = -1;
+        } else {
+          updatedDownvotedBy.push(currentUserEmail);
+          downvotesChange = 1;
+
+          if (currentUpvotedBy.includes(currentUserEmail)) {
+            updatedUpvotedBy = updatedUpvotedBy.filter(email => email !== currentUserEmail);
+            upvotesChange = -1;
+          }
+        }
+      }
+
+      await updateDoc(plotRef, {
+        upvotedBy: updatedUpvotedBy,
+        downvotedBy: updatedDownvotedBy,
+        upvotesCount: increment(upvotesChange),
+        downvotesCount: increment(downvotesChange),
+      });
+
+      stories = stories.map((rec) =>
+        rec.id === plotId
+          ? {
+              ...rec,
+              upvotedBy: updatedUpvotedBy,
+              downvotedBy: updatedDownvotedBy,
+              upvotesCount: Math.max(0, rec.upvotesCount + upvotesChange),
+              downvotesCount: Math.max(0, rec.downvotesCount + downvotesChange),
+            }
+          : rec
+      );
+    } catch (error) {
+      console.error("Error toggling vote:", error);
+      showAlert("Failed to update votes. Please try again later.");
+    }
   }
-
-  // Handle the vote logic here
-  console.log(`${voteType} for story ${storyId}`);
-};
-
-
-  // Simulate the current user check (for demonstration purposes)
-  
-
-  // Call updateCurrentUserEmail when the page loads or at a specific event
-  updateCurrentUserEmail();
-    // Example function to simulate user login state change
-    const login = (email: string) => {
-    currentUserEmail = email;  // Set user email on login
-  };
-
-  const logout = () => {
-    currentUserEmail = null;  // Reset user email on logout
-  };
 </script>
 
 
@@ -178,8 +339,12 @@ async function fetchStories() {
         bind:value={searchQuery}
         on:input={searchStories}
       />
-      <a href="/login" class="btn-link">Login</a>
-      <a href="/register" class="btn-link">Register</a>
+      <!-- Create Link -->
+      <a href="/createStory" class="btn-link">+create</a>
+      <!-- My Stories Link -->
+      <a href="/myStories" class="btn-link">My Stories</a> <!-- New link to My Stories -->
+      <!-- Logout Link -->
+      <a href="/" class="btn-link">Logout</a>
     </div>
   </div>
 </nav>
@@ -519,19 +684,6 @@ button.bg-red-500:hover {
   </button>
 </div>
 
-<!-- Message for not logged in -->
-<Modal bind:open={isModalOpen} size="md">
-  <div class="text-center">
-    <h3 class="text-xl font-semibold">Please Log In First</h3>
-    <p class="mt-2">You need to log in to vote or interact with the stories.</p>
-    <div class="mt-4 flex justify-center gap-4">
-      <button class="bg-blue-500 text-white px-4 py-2 rounded-md" on:click={logout}>OK</button>
-    </div>
-  </div>
-</Modal>
-
-
-
 {#if showComments}
   <div class="comments">
     {#each story.comments as comment (comment.id)}
@@ -543,7 +695,16 @@ button.bg-red-500:hover {
             bind:value={commentText}
             class="w-full p-2 mt-2 rounded border-2 border-gray-300"
           ></textarea>
-         
+          <button
+            class="bg-green-500 text-white px-4 py-2 mt-2 rounded"
+            on:click={async () => {
+              await editComment(story.id, comment.id, commentText);
+              editingCommentId = null; // Reset edit mode
+              commentText = ""; // Clear the input
+            }}
+          >
+            Save Changes
+          </button>
           <button
             class="bg-red-500 text-white px-4 py-2 mt-2 rounded"
             on:click={() => { editingCommentId = null; commentText = comment.text; }}
@@ -555,18 +716,43 @@ button.bg-red-500:hover {
           <p class="timestamp">{dayjs(comment.createdAt.toDate()).format('hh:mm A')}</p>
           {#if comment.commenter === currentUserEmail}
             <!-- Edit and Delete buttons -->
+            <button
+              class="text-blue-500"
+              on:click={() => { editingCommentId = comment.id; commentText = comment.text; }}
+            >
+              Edit
+            </button>
+            <button
+              class="text-red-500"
+              on:click={() => deleteComment(story.id, comment.id)}
+            >
+              Delete
+            </button>
           {/if}
         {/if}
       </div>
     {/each}
 
     <!-- Comment Box -->
+    <textarea 
+      bind:value={newCommentText}
+      class="w-full p-2 mt-2 rounded border-2 border-gray-300" 
+      placeholder="Write your comment here..." 
+      rows="4"
+    ></textarea>
 
-
-  
+    <!-- Submit Button -->
+    <button 
+      class="bg-blue-500 text-white px-4 py-2 mt-2 rounded"
+      on:click={async () => {
+        await addComment(story.id, newCommentText);
+        newCommentText = ""; // Clear the text area after submission
+      }}
+    >
+      Submit Comment
+    </button>
   </div>
 {/if}
-
 
           </div>
         </div>
