@@ -8,7 +8,6 @@
   import { Modal } from 'flowbite-svelte';
   import dayjs from 'dayjs';
   import 'dayjs/locale/en'; 
-  export let open: boolean = false; // Expecting `open` instead of `isOpen`
 
   const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
   const db = getFirestore(app);
@@ -185,6 +184,7 @@ async function fetchStories() {
 </nav>
 
 <style>
+  
      .navbar {
     background-color: #c6b2a2; /* Tailwind's bg-gray-800 */
     color: white;

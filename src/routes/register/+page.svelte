@@ -212,28 +212,4 @@
   .text-brown-700 {
     color: #5c3e28;
   }
-
-  .bg-brown-700 {
-    background-color: #4e3629;
-  }
-
-  .bg-brown-800 {
-    background-color: #3b271d;
-  }
-
-  .border-brown-300 {
-    border-color: #d5b59a;
-  }
-
-  .focus\:border-brown-600 {
-    border-color: #6a4e23;
-  }
-
-  .focus\:ring-brown-600 {
-    box-shadow: 0 0 0 1px #6a4e23;
-  }
-
-  .text-brown-400 {
-    color: #a88b6f;
-  }
 </style>

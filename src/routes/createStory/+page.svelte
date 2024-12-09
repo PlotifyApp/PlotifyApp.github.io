@@ -149,46 +149,12 @@
     --brown-darker: #6d462a;
     --brown-base: #9b7653;
   }
-  .text-dark-brown {
-    color: #4b3f3b; /* Dark brown */
-  }
-  .bg-brown-base {
-    background-color: var(--brown-base);
-  }
-
-  .bg-brown-base:hover {
-    background-color: var(--brown-medium);
-  }
-
-  .bg-brown-medium {
-    background-color: var(--brown-medium);
-  }
-
-  .bg-brown-dark {
-    background-color: var(--brown-dark);
-  }
-
-  .bg-brown-darker {
-    background-color: var(--brown-darker);
-  }
-
+ 
   .text-white {
     color: white;
   }
 
-  button {
-    transition: background-color 0.3s ease-in-out;
-    border: none;
-    border-radius: 0.375rem;
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-    cursor: pointer;
-  }
-
-  button:hover {
-    opacity: 0.9;
-  }
-      .navbar {
+  .navbar {
     background-color: #c6b2a2; /* Tailwind's bg-gray-800 */
     color: white;
   }
@@ -226,24 +192,7 @@
     outline: none;
     border-color: #6d462a;
   }
-  .form-input:focus, .form-textarea:focus {
-    border-color: var(--brown-base);
-    outline: none;
-  }
-  .form-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    text-align: center;
-    color: var(--text-dark);
-  }
 
-  .form-label {
-    display: block;
-    font-size: 1rem;
-    color: var(--text-dark);
-  }
-
-  .form-input,
   .form-textarea {
     width: 100%;
     padding: 0.5rem 1rem;
@@ -252,7 +201,6 @@
     transition: border-color 0.2s;
   }
 
-  .form-input:focus,
   .form-textarea:focus {
     border-color: var(--brown-dark);
     outline: none;
@@ -263,17 +211,4 @@
     min-height: 120px;
   }
 
-  .submit {
-    background-color: var(--brown-dark);
-    color: white;
-    font-size: 1rem;
-    padding: 0.5rem 1.5rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-
-  .submit:hover {
-    background-color: var(--brown-darker);
-  }
 </style>
