@@ -4,6 +4,8 @@
   import { initializeApp, getApps, getApp } from "firebase/app";
   import { getAuth, onAuthStateChanged } from 'firebase/auth';
   import { onMount } from 'svelte';
+	import { Toast } from 'flowbite-svelte';
+	import { CheckCircleSolid } from 'flowbite-svelte-icons';
 
   const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
   const db = getFirestore(app);
@@ -27,6 +29,8 @@
   let userStories: MyStory[] = [];
   let loading: boolean = true;
   let selectedStory: MyStory | null = null; // Track the story being edited
+  let showToast: boolean = false; // To control toast visibility
+  let toastMessage: string = "";  // The message to display in the toast
 
   onMount(() => {
     onAuthStateChanged(auth, async (user) => {
@@ -60,6 +64,11 @@
       const storyRef = doc(db, "storyList", id);
       await deleteDoc(storyRef);
       userStories = userStories.filter(story => story.id !== id);
+
+      // Show toast
+      toastMessage = "Story deleted successfully!";
+      showToast = true;
+      setTimeout(() => showToast = false, 3000); // Hide after 3 seconds
     } catch (error) {
       console.error("Error deleting story:", error);
     }
@@ -77,6 +86,11 @@
       // Update the story in the userStories array instantly
       userStories = userStories.map(s => s.id === story.id ? { ...s, ...story } : s);
 
+      // Show toast
+      toastMessage = "Story updated successfully!";
+      showToast = true;
+      setTimeout(() => showToast = false, 3000); // Hide after 3 seconds
+
       // Close the modal by setting selectedStory to null
       selectedStory = null;
     } catch (error) {
@@ -90,14 +104,10 @@
   <div class="modal-overlay" role="button" tabindex="0" aria-label="Close modal" on:click={() => selectedStory = null} on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') selectedStory = null; }}>
     <div class="modal-content" on:click|stopPropagation>
       <h3>Edit Story</h3>
-      
       <label for="title">Title</label>
       <input id="title" bind:value={selectedStory.title} type="text" />
-
       <label for="description">Description</label>
       <textarea id="description" bind:value={selectedStory.description}></textarea>
-
-      <!-- Add Field for Cover Image URL -->
       <label for="coverImage">Cover Image URL</label>
       <input id="coverImage" bind:value={selectedStory.coverImage} type="text" placeholder="Enter image URL" />
 
@@ -108,7 +118,15 @@
     </div>
   </div>
 {/if}
-
+{#if showToast}
+  <Toast class="brown-toast w-auto fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+    <svelte:fragment slot="icon">
+      <CheckCircleSolid class="w-5 h-5" />
+      <span class="sr-only">Check icon</span>
+    </svelte:fragment>
+    {toastMessage}
+  </Toast>
+{/if}
 <!-- The rest of your layout code remains the same -->
 
 
@@ -131,41 +149,38 @@
   <h2 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-center">My Stories</h2>
 
   {#if loading}
-    <div class="loading-dots">
-      <div class="dots">
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-      </div>
-      <p class="please-wait">Please wait...</p>
-    </div>
-  {:else if userStories.length > 0}
-    <div class="grid grid-cols-1 gap-4 sm:gap-6">
-      {#each userStories as story}
-        <div class="card p-3 sm:p-6">
-          <div class="flex flex-row gap-3 sm:gap-6">
-            {#if story.coverImage}
-              <div class="image-container">
-                <img src={story.coverImage} alt="{story.title} cover" class="cover-image" />
-              </div>
-            {/if}
-            <div class="flex flex-col space-y-1 sm:space-y-2 flex-1 min-w-0">
-              <h3 class="font-semibold text-lg sm:text-xl truncate">{story.title}</h3>
-              <p class="text-sm sm:text-base m-0 line-clamp-3"><strong>Description:</strong> {story.description}</p>
+  <div class="loading-spinner">
+    <div class="spinner"></div>
+    <p class="please-wait">Fetching your stories...</p>
+  </div>
+{:else if userStories.length > 0}
+  <div class="grid grid-cols-1 gap-4 sm:gap-6">
+    {#each userStories as story}
+      <div class="card p-3 sm:p-6">
+        <div class="flex flex-row gap-3 sm:gap-6">
+          {#if story.coverImage}
+            <div class="image-container">
+              <img src={story.coverImage} alt="{story.title} cover" class="cover-image" />
+            </div>
+          {/if}
+          <div class="flex flex-col space-y-1 sm:space-y-2 flex-1 min-w-0">
+            <h3 class="font-semibold text-lg sm:text-xl truncate">{story.title}</h3>
+            <p class="text-sm sm:text-base m-0 line-clamp-3"><strong>Description:</strong> {story.description}</p>
 
-              <!-- Edit and Delete Buttons -->
-              <div class="mt-4">
-                <button class="btn-link mr-2" on:click={() => openEditModal(story)}>Edit</button>
-                <button class="btn-link text-red-600" on:click={() => deleteStory(story.id!)}>Delete</button>
-              </div>
+            <!-- Edit and Delete Buttons -->
+            <div class="mt-4">
+              <button class="btn-link mr-2" on:click={() => openEditModal(story)}>Edit</button>
+              <button class="btn-link text-red-600" on:click={() => deleteStory(story.id!)}>Delete</button>
             </div>
           </div>
         </div>
-      {/each}
-    </div>
-  {:else}
-    <p class="text-center">No stories found.</p>
-  {/if}
+      </div>
+    {/each}
+  </div>
+{:else}
+  <p class="text-center">No stories found.</p>
+{/if}
+
 </div>
 
 <style>
@@ -194,7 +209,34 @@
   border-radius: 8px;
   padding: 20px;
 }
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+}
 
+.spinner {
+  border: 8px solid #f3f3f3; /* Light grey background color */
+  border-top: 8px solid #855c3b; /* Dark brown color for the spinner */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.please-wait {
+  margin-top: 10px;
+  color: #855c3b; /* Dark brown color */
+  font-size: 16px;
+}
 .modal-content {
   background-color: var(--white);
   padding: 20px;

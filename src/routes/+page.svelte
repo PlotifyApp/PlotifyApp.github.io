@@ -64,19 +64,15 @@
   comment.showActions = !comment.showActions;
 }
 onMount(async () => {
-  updateCurrentUserEmail();
-  await fetchStories();
-  isLoading = false;
-});
+    updateCurrentUserEmail();
+    await fetchStories();
+    isLoading = false;
+  });
 
 
   function updateCurrentUserEmail() {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        currentUserEmail = user.email;
-      } else {
-        currentUserEmail = null;
-      }
+    onAuthStateChanged(auth, async (user) => {
+      currentUserEmail = user ? user.email : null;
     });
   }
 
@@ -387,30 +383,61 @@ button:hover {
 }
 
 
+/* CSS for the brown circular spinner */
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+}
 
-  @keyframes bounce {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
+.spinner {
+  border: 8px solid #f3f3f3; /* Light grey background color */
+  border-top: 8px solid #855c3b; /* Dark brown color for the spinner */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
 
-  .please-wait {
-    color: #666;
-    font-size: 0.9rem;
-    font-weight: 500;
-  }
+/* CSS for the brown circular spinner */
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.spinner {
+  border: 8px solid #f3f3f3; /* Light grey background color */
+  border-top: 8px solid #855c3b; /* Dark brown color for the spinner */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.please-wait {
+  margin-top: 10px;
+  color: #855c3b; /* Dark brown color */
+  font-size: 16px;
+}
+
+
 </style>
 {#if isLoading}
-  <div class="loading-dots">
-    <div class="dots">
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-    </div>
-    <p class="please-wait">Please wait...</p>
+  <div class="loading-spinner">
+    <div class="spinner"></div>
+    <p class="please-wait">Loading stories...</p>
   </div>
 {:else}
   <div class="container mx-auto px-1 sm:px-4 lg:px-8 py-4 sm:py-6">
@@ -422,7 +449,7 @@ button:hover {
             <div class="flex flex-col space-y-1 sm:space-y-2 flex-1 min-w-0">
               <p class="story-text">Story by {story.storyBy}</p>
               <h3 class="story-text"><strong>{story.title}</strong></h3>
-              <p class="story-text line-clamp-2 sm:line-clamp-3">{story.description}</p>
+              <p class="story-text justify-text">{story.description}</p>
             </div>
 
             <!-- Image Section Below Text -->
@@ -483,9 +510,6 @@ button:hover {
               <div class="text-center">
                 <h3 class="text-xl font-semibold">Please Log In First</h3>
                 <p class="mt-2">You need to log in to vote or interact with the stories.</p>
-                <div class="mt-4 flex justify-center gap-4">
-                  <button class="bg-blue-500 text-white px-4 py-2 rounded-md" on:click={logout}>OK</button>
-                </div>
               </div>
             </Modal>
 

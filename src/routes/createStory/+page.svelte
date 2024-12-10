@@ -130,13 +130,14 @@
 
   {#if showToast}
     <div class="fixed bottom-4 right-4 z-50">
-      <Toast color="green" class="w-auto">
+      <Toast class="brown-toast w-auto fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <svelte:fragment slot="icon">
           <CheckCircleSolid class="w-5 h-5" />
           <span class="sr-only">Check icon</span>
         </svelte:fragment>
         Story added successfully.
       </Toast>
+      
     </div>
   {/if}
 </main>
@@ -149,7 +150,10 @@
     --brown-darker: #6d462a;
     --brown-base: #9b7653;
   }
- 
+  :global(.brown-toast) {
+    background-color: var(--brown-base); /* Change to any other brown color variable if desired */
+    color: white; /* Adjust text color for contrast */
+  }
   .text-white {
     color: white;
   }

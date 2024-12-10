@@ -53,7 +53,7 @@
       password = "";
       confirmPassword = "";
       errorMessage = "";
-      successMessage = "User registered successfully!";
+      successMessage = "Plotify Account Created!";
     } catch (error: unknown) {
       console.error("Error during registration:", error);
 
@@ -157,16 +157,17 @@
 
       <!-- Error/Success Messages -->
       {#if errorMessage}
-        <div class="bg-red-50 border-l-4 border-red-500 p-4">
-          <p class="text-red-700 text-sm">{errorMessage}</p>
-        </div>
-      {/if}
+  <div class="bg-brown-light border-l-4 border-brown-base p-4">
+    <p class="text-brown-dark text-sm">{errorMessage}</p>
+  </div>
+{/if}
 
-      {#if successMessage}
-        <div class="bg-green-50 border-l-4 border-green-500 p-4">
-          <p class="text-green-700 text-sm">{successMessage}</p>
-        </div>
-      {/if}
+{#if successMessage}
+  <div class="bg-brown-light border-l-4 border-brown-base p-4">
+    <p class="text-brown-dark text-sm">{successMessage}</p>
+  </div>
+{/if}
+
 
       <!-- Register Button -->
       <Button
@@ -174,11 +175,11 @@
         class="w-full bg-brown-base text-white hover:bg-brown-darker"
         disabled={isLoading}
       >
-        {#if isLoading}
-          <div class="flex items-center justify-center">
-            <div class="animate-spin h-5 w-5 mr-3 border-2 border-white border-t-transparent rounded-full"></div>
-            Creating account...
-          </div>
+      {#if isLoading}
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p class="please-wait">Creating Plotify Account...</p>
+      </div>
         {:else}
           Create Account
         {/if}
@@ -196,6 +197,38 @@
 </main>
 
 <style>
+  
+  
+  /* CSS for the brown circular spinner */
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.spinner {
+  border: 8px solid #f3f3f3; /* Light grey background color */
+  border-top: 8px solid #855c3b; /* Dark brown color for the spinner */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.please-wait {
+  margin-top: 10px;
+  color: #855c3b; /* Dark brown color */
+  font-size: 16px;
+}
+
   :root {
     --brown-light: #f3e8e0; /* Very light brown */
     --brown-base: #c6b2a2; /* Base brown */

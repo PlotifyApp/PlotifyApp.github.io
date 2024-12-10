@@ -141,7 +141,7 @@
       {#if isLoading}
         <div class="flex items-center justify-center">
           <div class="animate-spin h-5 w-5 mr-3 border-2 border-white border-t-transparent rounded-full"></div>
-          Signing in...
+          Logging in to your Plotify Account...
         </div>
       {:else}
         Sign in
