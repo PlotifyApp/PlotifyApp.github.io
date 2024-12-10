@@ -236,6 +236,7 @@ async function fetchStories() {
 
   function searchStories() {
   const searchTerm = searchQuery.toLowerCase().trim();
+  console.log("Search term:", searchTerm); // Log the search term
 
   // Filter stories based on the search query
   filteredStories = stories.filter((rec) => {
@@ -246,7 +247,10 @@ async function fetchStories() {
       rec.genre.toLowerCase().includes(searchTerm)
     );
   });
+
+  console.log("Filtered stories:", filteredStories); // Log filtered stories
 }
+
 
 
 
@@ -611,7 +615,6 @@ button.bg-red-500:hover {
 }
 
 </style>
-
 {#if isLoading}
   <div class="loading-dots">
     <div class="dots">
@@ -624,7 +627,8 @@ button.bg-red-500:hover {
 {:else}
   <div class="container mx-auto px-1 sm:px-4 lg:px-8 py-4 sm:py-6">
     <div class="flex flex-col space-y-4 sm:space-y-6">
-      {#each stories as story}
+      <!-- Replace this part with filteredStories instead of stories -->
+      {#each filteredStories as story}
       <div class="card px-2 sm:px-4">
         <div class="flex flex-col h-full">
           <!-- Text Content Section -->
@@ -645,122 +649,120 @@ button.bg-red-500:hover {
           </div>
           {/if}
  
-      
-
-<!-- Buttons Section -->
-<div class="mt-3 sm:mt-4 flex justify-start items-center space-x-3 sm:space-x-4 pt-2 border-t">
-  <!-- Upvote Button -->
-  <button
-    class="btn flex items-center space-x-1"
-    on:click={() => toggleVote(story.id, 'upvote')}
-  >
-    <img src="/images/upvote.png" alt="Upvote" class="w-5 h-5" />
-    <span>{story.upvotesCount}</span>
-  </button>
-
-  <!-- Downvote Button -->
-  <button
-    class="btn flex items-center space-x-1"
-    on:click={() => toggleVote(story.id, 'downvote')}
-  >
-    <img src="/images/downvote.png" alt="Downvote" class="w-5 h-5" />
-    <span>{story.downvotesCount}</span>
-  </button>
-
-  <button 
-    class="flex items-center text-gray-600 hover:text-gray-800"
-    on:click={() => (showComments = !showComments)}
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="1.5"
-      stroke="currentColor"
-      class="w-6 h-6"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M12 20.25c4.97 0 9-2.98 9-6.75s-4.03-6.75-9-6.75S3 9.98 3 13.5s4.03 6.75 9 6.75zM12 20.25L6.75 16.5m5.25 3.75l5.25-3.75"
-      />
-    </svg>
-    <span class="ml-2">{story.comments.length}</span>
-  </button>
-</div>
-
-{#if showComments}
-  <div class="comments">
-    {#each story.comments as comment (comment.id)}
-      <div class="comment">
-        <p>{comment.commenter}</p>
-        {#if editingCommentId === comment.id}
-          <!-- Edit Form -->
-          <textarea 
-            bind:value={commentText}
-            class="w-full p-2 mt-2 rounded border-2 border-gray-300"
-          ></textarea>
-          <button
-            class="bg-green-500 text-white px-4 py-2 mt-2 rounded"
-            on:click={async () => {
-              await editComment(story.id, comment.id, commentText);
-              editingCommentId = null; // Reset edit mode
-              commentText = ""; // Clear the input
-            }}
-          >
-            Save Changes
-          </button>
-          <button
-            class="bg-red-500 text-white px-4 py-2 mt-2 rounded"
-            on:click={() => { editingCommentId = null; commentText = comment.text; }}
-          >
-            Cancel
-          </button>
-        {:else}
-          <h6>{comment.text}</h6>
-          <p class="timestamp">{dayjs(comment.createdAt.toDate()).format('hh:mm A')}</p>
-          {#if comment.commenter === currentUserEmail}
-            <!-- Edit and Delete buttons -->
+          <!-- Buttons Section -->
+          <div class="mt-3 sm:mt-4 flex justify-start items-center space-x-3 sm:space-x-4 pt-2 border-t">
+            <!-- Upvote Button -->
             <button
-              class="text-blue-500"
-              on:click={() => { editingCommentId = comment.id; commentText = comment.text; }}
+              class="btn flex items-center space-x-1"
+              on:click={() => toggleVote(story.id, 'upvote')}
             >
-              Edit
+              <img src="/images/upvote.png" alt="Upvote" class="w-5 h-5" />
+              <span>{story.upvotesCount}</span>
             </button>
+
+            <!-- Downvote Button -->
             <button
-              class="text-red-500"
-              on:click={() => deleteComment(story.id, comment.id)}
+              class="btn flex items-center space-x-1"
+              on:click={() => toggleVote(story.id, 'downvote')}
             >
-              Delete
+              <img src="/images/downvote.png" alt="Downvote" class="w-5 h-5" />
+              <span>{story.downvotesCount}</span>
             </button>
-          {/if}
-        {/if}
-      </div>
-    {/each}
 
-    <!-- Comment Box -->
-    <textarea 
-      bind:value={newCommentText}
-      class="w-full p-2 mt-2 rounded border-2 border-gray-300" 
-      placeholder="Write your comment here..." 
-      rows="4"
-    ></textarea>
-
-    <!-- Submit Button -->
-    <button 
-      class="bg-blue-500 text-white px-4 py-2 mt-2 rounded"
-      on:click={async () => {
-        await addComment(story.id, newCommentText);
-        newCommentText = ""; // Clear the text area after submission
-      }}
-    >
-      Submit Comment
-    </button>
-  </div>
-{/if}
-
+            <button 
+              class="flex items-center text-gray-600 hover:text-gray-800"
+              on:click={() => (showComments = !showComments)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 20.25c4.97 0 9-2.98 9-6.75s-4.03-6.75-9-6.75S3 9.98 3 13.5s4.03 6.75 9 6.75zM12 20.25L6.75 16.5m5.25 3.75l5.25-3.75"
+                />
+              </svg>
+              <span class="ml-2">{story.comments.length}</span>
+            </button>
           </div>
+
+          {#if showComments}
+            <div class="comments">
+              {#each story.comments as comment (comment.id)}
+                <div class="comment">
+                  <p>{comment.commenter}</p>
+                  {#if editingCommentId === comment.id}
+                    <!-- Edit Form -->
+                    <textarea 
+                      bind:value={commentText}
+                      class="w-full p-2 mt-2 rounded border-2 border-gray-300"
+                    ></textarea>
+                    <button
+                      class="bg-green-500 text-white px-4 py-2 mt-2 rounded"
+                      on:click={async () => {
+                        await editComment(story.id, comment.id, commentText);
+                        editingCommentId = null; // Reset edit mode
+                        commentText = ""; // Clear the input
+                      }}
+                    >
+                      Save Changes
+                    </button>
+                    <button
+                      class="bg-red-500 text-white px-4 py-2 mt-2 rounded"
+                      on:click={() => { editingCommentId = null; commentText = comment.text; }}
+                    >
+                      Cancel
+                    </button>
+                  {:else}
+                    <h6>{comment.text}</h6>
+                    <p class="timestamp">{dayjs(comment.createdAt.toDate()).format('hh:mm A')}</p>
+                    {#if comment.commenter === currentUserEmail}
+                      <!-- Edit and Delete buttons -->
+                      <button
+                        class="text-blue-500"
+                        on:click={() => { editingCommentId = comment.id; commentText = comment.text; }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        class="text-red-500"
+                        on:click={() => deleteComment(story.id, comment.id)}
+                      >
+                        Delete
+                      </button>
+                    {/if}
+                  {/if}
+                </div>
+              {/each}
+
+              <!-- Comment Box -->
+              <textarea 
+                bind:value={newCommentText}
+                class="w-full p-2 mt-2 rounded border-2 border-gray-300" 
+                placeholder="Write your comment here..." 
+                rows="4"
+              ></textarea>
+
+              <!-- Submit Button -->
+              <button 
+                class="bg-blue-500 text-white px-4 py-2 mt-2 rounded"
+                on:click={async () => {
+                  await addComment(story.id, newCommentText);
+                  newCommentText = ""; // Clear the text area after submission
+                }}
+              >
+                Submit Comment
+              </button>
+            </div>
+          {/if}
+
         </div>
+      </div>
       {/each}
     </div>
   </div>

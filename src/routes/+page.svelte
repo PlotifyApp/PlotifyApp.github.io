@@ -121,16 +121,21 @@ async function fetchStories() {
   }
 
   function searchStories() {
-    filteredStories = stories.filter((rec) => {
-      const searchTerm = searchQuery.toLowerCase();
-      return (
-        rec.title.toLowerCase().includes(searchTerm) ||
-        rec.author.toLowerCase().includes(searchTerm) ||
-        rec.description.toLowerCase().includes(searchTerm) ||
-        rec.genre.toLowerCase().includes(searchTerm)
-      );
-    });
-  }
+  const searchTerm = searchQuery.toLowerCase().trim();
+  console.log("Search term:", searchTerm); // Log the search term
+
+  // Filter stories based on the search query
+  filteredStories = stories.filter((rec) => {
+    return (
+      rec.title.toLowerCase().includes(searchTerm) ||
+      rec.author.toLowerCase().includes(searchTerm) ||
+      rec.description.toLowerCase().includes(searchTerm) ||
+      rec.genre.toLowerCase().includes(searchTerm)
+    );
+  });
+
+  console.log("Filtered stories:", filteredStories); // Log filtered stories
+}
 
 
   const toggleVote = (storyId: string, voteType: string) => {
@@ -398,7 +403,6 @@ button:hover {
     font-weight: 500;
   }
 </style>
-
 {#if isLoading}
   <div class="loading-dots">
     <div class="dots">
@@ -411,17 +415,14 @@ button:hover {
 {:else}
   <div class="container mx-auto px-1 sm:px-4 lg:px-8 py-4 sm:py-6">
     <div class="flex flex-col space-y-4 sm:space-y-6">
-      {#each stories as story}
+      {#each filteredStories as story}
         <div class="card px-2 sm:px-4">
           <div class="flex flex-col h-full">
             <!-- Text Content Section -->
             <div class="flex flex-col space-y-1 sm:space-y-2 flex-1 min-w-0">
               <p class="story-text">Story by {story.storyBy}</p>
-                            <h3 class="story-text"><strong>{story.title}</strong></h3>
-
+              <h3 class="story-text"><strong>{story.title}</strong></h3>
               <p class="story-text line-clamp-2 sm:line-clamp-3">{story.description}</p>
-
-              
             </div>
 
             <!-- Image Section Below Text -->
@@ -434,99 +435,90 @@ button:hover {
                 />
               </div>
             {/if}
- 
-      
 
-<!-- Buttons Section -->
-<div class="mt-3 sm:mt-4 flex justify-start items-center space-x-3 sm:space-x-4 pt-2 border-t">
-  <!-- Upvote Button -->
-  <button
-    class="btn flex items-center space-x-1"
-    on:click={() => toggleVote(story.id, 'upvote')}
-  >
-    <img src="/images/upvote.png" alt="Upvote" class="w-5 h-5" />
-    <span>{story.upvotesCount}</span>
-  </button>
+            <!-- Buttons Section -->
+            <div class="mt-3 sm:mt-4 flex justify-start items-center space-x-3 sm:space-x-4 pt-2 border-t">
+              <!-- Upvote Button -->
+              <button
+                class="btn flex items-center space-x-1"
+                on:click={() => toggleVote(story.id, 'upvote')}
+              >
+                <img src="/images/upvote.png" alt="Upvote" class="w-5 h-5" />
+                <span>{story.upvotesCount}</span>
+              </button>
 
-  <!-- Downvote Button -->
-  <button
-    class="btn flex items-center space-x-1"
-    on:click={() => toggleVote(story.id, 'downvote')}
-  >
-    <img src="/images/downvote.png" alt="Downvote" class="w-5 h-5" />
-    <span>{story.downvotesCount}</span>
-  </button>
+              <!-- Downvote Button -->
+              <button
+                class="btn flex items-center space-x-1"
+                on:click={() => toggleVote(story.id, 'downvote')}
+              >
+                <img src="/images/downvote.png" alt="Downvote" class="w-5 h-5" />
+                <span>{story.downvotesCount}</span>
+              </button>
 
-  <button 
-    class="flex items-center text-gray-600 hover:text-gray-800"
-    on:click={() => (showComments = !showComments)}
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="1.5"
-      stroke="currentColor"
-      class="w-6 h-6"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M12 20.25c4.97 0 9-2.98 9-6.75s-4.03-6.75-9-6.75S3 9.98 3 13.5s4.03 6.75 9 6.75zM12 20.25L6.75 16.5m5.25 3.75l5.25-3.75"
-      />
-    </svg>
-    <span class="ml-2">{story.comments.length}</span>
-  </button>
-</div>
+              <button 
+                class="flex items-center text-gray-600 hover:text-gray-800"
+                on:click={() => (showComments = !showComments)}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 20.25c4.97 0 9-2.98 9-6.75s-4.03-6.75-9-6.75S3 9.98 3 13.5s4.03 6.75 9 6.75zM12 20.25L6.75 16.5m5.25 3.75l5.25-3.75"
+                  />
+                </svg>
+                <span class="ml-2">{story.comments.length}</span>
+              </button>
+            </div>
 
-<!-- Message for not logged in -->
-<Modal bind:open={isModalOpen} size="md">
-  <div class="text-center">
-    <h3 class="text-xl font-semibold">Please Log In First</h3>
-    <p class="mt-2">You need to log in to vote or interact with the stories.</p>
-    <div class="mt-4 flex justify-center gap-4">
-      <button class="bg-blue-500 text-white px-4 py-2 rounded-md" on:click={logout}>OK</button>
-    </div>
-  </div>
-</Modal>
+            <!-- Message for not logged in -->
+            <Modal bind:open={isModalOpen} size="md">
+              <div class="text-center">
+                <h3 class="text-xl font-semibold">Please Log In First</h3>
+                <p class="mt-2">You need to log in to vote or interact with the stories.</p>
+                <div class="mt-4 flex justify-center gap-4">
+                  <button class="bg-blue-500 text-white px-4 py-2 rounded-md" on:click={logout}>OK</button>
+                </div>
+              </div>
+            </Modal>
 
-
-
-{#if showComments}
-  <div class="comments">
-    {#each story.comments as comment (comment.id)}
-      <div class="comment">
-        <p>{comment.commenter}</p>
-        {#if editingCommentId === comment.id}
-          <!-- Edit Form -->
-          <textarea 
-            bind:value={commentText}
-            class="w-full p-2 mt-2 rounded border-2 border-gray-300"
-          ></textarea>
-         
-          <button
-            class="bg-red-500 text-white px-4 py-2 mt-2 rounded"
-            on:click={() => { editingCommentId = null; commentText = comment.text; }}
-          >
-            Cancel
-          </button>
-        {:else}
-          <h6>{comment.text}</h6>
-          <p class="timestamp">{dayjs(comment.createdAt.toDate()).format('hh:mm A')}</p>
-          {#if comment.commenter === currentUserEmail}
-            <!-- Edit and Delete buttons -->
-          {/if}
-        {/if}
-      </div>
-    {/each}
-
-    <!-- Comment Box -->
-
-
-  
-  </div>
-{/if}
-
+            <!-- Comments Section -->
+            {#if showComments}
+              <div class="comments">
+                {#each story.comments as comment (comment.id)}
+                  <div class="comment">
+                    <p>{comment.commenter}</p>
+                    {#if editingCommentId === comment.id}
+                      <!-- Edit Form -->
+                      <textarea 
+                        bind:value={commentText}
+                        class="w-full p-2 mt-2 rounded border-2 border-gray-300"
+                      ></textarea>
+                     
+                      <button
+                        class="bg-red-500 text-white px-4 py-2 mt-2 rounded"
+                        on:click={() => { editingCommentId = null; commentText = comment.text; }}
+                      >
+                        Cancel
+                      </button>
+                    {:else}
+                      <h6>{comment.text}</h6>
+                      <p class="timestamp">{dayjs(comment.createdAt.toDate()).format('hh:mm A')}</p>
+                      {#if comment.commenter === currentUserEmail}
+                        <!-- Edit and Delete buttons -->
+                      {/if}
+                    {/if}
+                  </div>
+                {/each}
+              </div>
+            {/if}
 
           </div>
         </div>
