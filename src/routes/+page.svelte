@@ -184,7 +184,7 @@ async function fetchStories() {
 </nav>
 
 <style>
-  
+
      .navbar {
     background-color: #c6b2a2; /* Tailwind's bg-gray-800 */
     color: white;
@@ -294,23 +294,6 @@ async function fetchStories() {
   cursor: pointer;
 }
 
-.comment button.text-blue-500 {
-  color: var(--brown-darker); /* Darker brown for edit */
-  background-color: transparent;
-}
-
-.comment button.text-blue-500:hover {
-  background-color: var(--brown-light); /* Light brown on hover */
-}
-
-.comment button.text-red-500 {
-  color: var(--brown-dark); /* Dark brown for delete */
-  background-color: transparent;
-}
-
-.comment button.text-red-500:hover {
-  background-color: var(--brown-medium); /* Medium brown on hover */
-}
 
 textarea {
   width: 100%;
@@ -340,29 +323,6 @@ button:hover {
   opacity: 0.9; /* Slight fade on hover for all buttons */
 }
 
-button.bg-blue-500 {
-  background-color: var(--brown-medium); /* Medium brown for submit */
-}
-
-button.bg-blue-500:hover {
-  background-color: var(--brown-dark); /* Darker brown on hover */
-}
-
-button.bg-green-500 {
-  background-color: var(--brown-base); /* Base brown for save */
-}
-
-button.bg-green-500:hover {
-  background-color: var(--brown-medium); /* Medium brown on hover */
-}
-
-button.bg-red-500 {
-  background-color: var(--brown-darker); /* Darker brown for cancel */
-}
-
-button.bg-red-500:hover {
-  background-color: var(--brown-dark); /* Darker brown on hover */
-}
 
 
 

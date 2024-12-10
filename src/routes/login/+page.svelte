@@ -50,8 +50,23 @@
   }
 </script>
 
-<main class="min-h-screen flex items-center justify-center py-6 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-md w-full space-y-4 bg-white rounded-xl shadow-lg p-6 sm:p-8">
+<main class="min-h-screen flex items-center justify-center py-6 px-4 sm:px-6 lg:px-8 relative">
+  <div class="absolute inset-0 area">
+    <ul class="circles">
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+  </div>
+  <div class="max-w-md w-full space-y-4 bg-white rounded-xl shadow-lg p-6 sm:p-8 z-10">
+
     <!-- Fixed Logo/Brand section -->
     <div class="text-center space-y-1">
       <img 
@@ -59,9 +74,10 @@
         src="images/logo1.png" 
         alt="Logo" 
       />
-      <h2 class="text-2xl sm:text-3xl font-bold text-brown-800">Welcome Back</h2>
-      <p class="text-sm text-brown-600">Please sign in to continue</p>
+      <h2 class="text-2xl sm:text-3xl font-bold text-brown-800">Log In</h2> <!-- Applying brown-800 -->
+      <p class="text-sm text-brown-600">Continue sharing your stories!</p> <!-- Applying brown-600 -->
     </div>
+    
 
     <form on:submit|preventDefault={loginUser} class="space-y-4">
       <!-- Email Input -->
@@ -147,19 +163,72 @@
 </main>
 
 <style>
-  :global(body) {
-    background-color: #f5f3f0; /* A soft light brown */
+  :root {
+    --brown-light: #f3e8e0; /* Very light brown */
+    --brown-base: #c6b2a2; /* Base brown */
+    --brown-medium: #a58d7a; /* Medium brown */
+    --brown-dark: #7c5f4c; /* Dark brown */
+    --brown-darker: #5b4234; /* Darker brown */
   }
 
-  /* Optional: Style the input focus states */
-  :global(input:focus) {
-    border-color: #6a4e23; /* Dark brown */
-    box-shadow: 0 0 0 1px #6a4e23;
+  body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+    background: var(--brown-light);
   }
 
-  /* Button Hover state */
-  :global(button:hover) {
-    opacity: 0.9;
+  .area {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .circles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    pointer-events: none;
+  }
+
+  .circles li {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--brown-medium), var(--brown-darker));
+    animation: move 25s linear infinite;
+    opacity: 0.8;
+    filter: blur(8px);
+  }
+
+  .circles li:nth-child(1) { width: 80px; height: 80px; animation-duration: 15s; }
+  .circles li:nth-child(2) { width: 120px; height: 120px; animation-duration: 25s; }
+  .circles li:nth-child(3) { width: 100px; height: 100px; animation-duration: 20s; }
+  .circles li:nth-child(4) { width: 90px; height: 90px; animation-duration: 15s; }
+  .circles li:nth-child(5) { width: 110px; height: 110px; animation-duration: 30s; }
+  .circles li:nth-child(6) { width: 130px; height: 130px; animation-duration: 20s; }
+  .circles li:nth-child(7) { width: 70px; height: 70px; animation-duration: 10s; }
+  .circles li:nth-child(8) { width: 80px; height: 80px; animation-duration: 25s; }
+  .circles li:nth-child(9) { width: 150px; height: 150px; animation-duration: 40s; }
+  .circles li:nth-child(10) { width: 60px; height: 60px; animation-duration: 35s; }
+
+  @keyframes move {
+    0% { transform: translateY(0) rotate(0deg); }
+    100% { transform: translateY(-1000px) rotate(360deg); }
   }
 
   .text-brown-800 {
@@ -173,5 +242,13 @@
   .text-brown-700 {
     color: #5c3e28;
   }
+  
+  :global(input:focus) {
+    border-color: var(--brown-dark);
+    box-shadow: 0 0 0 1px var(--brown-dark);
+  }
 
+  :global(button:hover) {
+    opacity: 0.9;
+  }
 </style>

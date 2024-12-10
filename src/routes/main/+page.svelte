@@ -235,16 +235,19 @@ async function fetchStories() {
   }
 
   function searchStories() {
-    filteredStories = stories.filter((rec) => {
-      const searchTerm = searchQuery.toLowerCase();
-      return (
-        rec.title.toLowerCase().includes(searchTerm) ||
-        rec.author.toLowerCase().includes(searchTerm) ||
-        rec.description.toLowerCase().includes(searchTerm) ||
-        rec.genre.toLowerCase().includes(searchTerm)
-      );
-    });
-  }
+  const searchTerm = searchQuery.toLowerCase().trim();
+
+  // Filter stories based on the search query
+  filteredStories = stories.filter((rec) => {
+    return (
+      rec.title.toLowerCase().includes(searchTerm) ||
+      rec.author.toLowerCase().includes(searchTerm) ||
+      rec.description.toLowerCase().includes(searchTerm) ||
+      rec.genre.toLowerCase().includes(searchTerm)
+    );
+  });
+}
+
 
 
   async function toggleVote(plotId: string, voteType: 'upvote' | 'downvote') {
@@ -339,6 +342,7 @@ async function fetchStories() {
         bind:value={searchQuery}
         on:input={searchStories}
       />
+      
       <!-- Create Link -->
       <a href="/createStory" class="btn-link">+create</a>
       <!-- My Stories Link -->
@@ -602,6 +606,10 @@ button.bg-red-500:hover {
     font-size: 0.9rem;
     font-weight: 500;
   }
+  .justify-text {
+  text-align: justify;
+}
+
 </style>
 
 {#if isLoading}
@@ -617,28 +625,25 @@ button.bg-red-500:hover {
   <div class="container mx-auto px-1 sm:px-4 lg:px-8 py-4 sm:py-6">
     <div class="flex flex-col space-y-4 sm:space-y-6">
       {#each stories as story}
-        <div class="card px-2 sm:px-4">
-          <div class="flex flex-col h-full">
-            <!-- Text Content Section -->
-            <div class="flex flex-col space-y-1 sm:space-y-2 flex-1 min-w-0">
-              <p class="story-text">Story by {story.storyBy}</p>
-                            <h3 class="story-text"><strong>{story.title}</strong></h3>
-
-              <p class="story-text line-clamp-2 sm:line-clamp-3">{story.description}</p>
-
-              
-            </div>
-
-            <!-- Image Section Below Text -->
-            {#if story.coverImage}
-              <div class="image-container mt-4"> <!-- Add margin to separate from text -->
-                <img 
-                  src={story.coverImage} 
-                  alt="{story.title} cover" 
-                  class="cover-image w-full h-auto object-cover" 
-                />
-              </div>
-            {/if}
+      <div class="card px-2 sm:px-4">
+        <div class="flex flex-col h-full">
+          <!-- Text Content Section -->
+          <div class="flex flex-col space-y-1 sm:space-y-2 flex-1 min-w-0">
+            <p class="story-text">Story by {story.storyBy}</p>
+            <h3 class="story-text"><strong>{story.title}</strong></h3>
+            <p class="story-text justify-text">{story.description}</p>
+          </div>
+      
+          <!-- Image Section Below Text -->
+          {#if story.coverImage}
+          <div class="image-container mt-4"> <!-- Add margin to separate from text -->
+            <img 
+              src={story.coverImage} 
+              alt="{story.title} cover" 
+              class="cover-image w-full h-auto object-cover" 
+            />
+          </div>
+          {/if}
  
       
 

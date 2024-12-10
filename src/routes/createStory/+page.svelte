@@ -98,7 +98,7 @@
               required 
             />
         
-            <Label for="description" class="block text-sm sm:text-base text-[#4e3b31]">Description</Label>
+            <Label for="description" class="block text-sm sm:text-base text-[#4e3b31]">Body</Label>
             <textarea 
               id="description" 
               class="form-textarea w-full p-2 sm:p-3 border border-gray-300 rounded-md text-sm sm:text-base focus:border-[#9b7653]" 
